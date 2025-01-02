@@ -1,0 +1,105 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet author="dev" id="create-schema">
+        <sql dbms="postgresql" endDelimiter=";">
+            CREATE SCHEMA bills
+        </sql>
+    </changeSet>
+    <changeSet id="create-executor"
+               author="dev">
+        <createTable tableName="executor" schemaName="bills">
+            <column autoIncrement="true"
+                    name="id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_executorentity"/>
+            </column>
+            <column name="phone"
+                    type="VARCHAR(255)"/>
+            <column name="name"
+                    type="VARCHAR(255)"/>
+            <column name="organization"
+                    type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="create-users"
+               author="dev">
+        <createTable tableName="users" schemaName="bills">
+            <column autoIncrement="true"
+                    name="id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_userentity"/>
+            </column>
+            <column name="email"
+                    type="VARCHAR(255)"/>
+            <column name="nickname"
+                    type="VARCHAR(255)"/>
+            <column name="password"
+                    type="VARCHAR(255)"/>
+            <column name="created_at"
+                    type="DATETIME"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-claim"
+               author="dev">
+        <createTable tableName="claim" schemaName="bills">
+            <column name="id"
+                    type="UUID">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_claimentity"/>
+            </column>
+            <column name="title"
+                    type="VARCHAR(255)"/>
+            <column name="definition"
+                    type="VARCHAR(255)"/>
+            <column name="user_id"
+                    type="BIGINT"/>
+            <column name="executor_id"
+                    type="BIGINT"/>
+            <column name="created_at"
+                    type="DATETIME"/>
+            <column name="updated_at"
+                    type="DATETIME"/>
+            <column name="city"
+                    type="VARCHAR(255)"/>
+            <column name="street"
+                    type="VARCHAR(255)"/>
+            <column name="house"
+                    type="VARCHAR(255)"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="user_id"
+                             constraintName="uc_claimentity_user"
+                             schemaName="bills"
+                             tableName="claim"/>
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="claim"
+                                 baseTableSchemaName="bills"
+                                 constraintName="FK_CLAIMENTITY_ON_USER"
+                                 referencedColumnNames="id"
+                                 referencedTableSchemaName="bills"
+                                 referencedTableName="users"/>
+        <addUniqueConstraint columnNames="executor_id"
+                             constraintName="uc_claimentity_executor"
+                             schemaName="bills"
+                             tableName="claim"/>
+        <addForeignKeyConstraint baseColumnNames="executor_id"
+                                 baseTableName="claim"
+                                 baseTableSchemaName="bills"
+                                 constraintName="FK_CLAIMENTITY_ON_EXECUTOR"
+                                 referencedColumnNames="id"
+                                 referencedTableSchemaName="bills"
+                                 referencedTableName="executor"/>
+    </changeSet>
+
+</databaseChangeLog>
