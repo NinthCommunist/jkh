@@ -9,12 +9,13 @@ spring:
     password: admin
 
   jpa:
-    show-sql: true
     hibernate:
       ddl-auto: validate
+
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
 
 logging:
   level:
-    org.springframework.security: debug
+    org.hibernate.SQL: DEBUG
+    org.springframework.security: DEBUG

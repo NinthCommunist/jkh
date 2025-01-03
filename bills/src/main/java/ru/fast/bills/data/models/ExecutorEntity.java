@@ -1,7 +1,6 @@
-package ru.fast.bills.dao.entities;
+package ru.fast.bills.data.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -24,7 +23,7 @@ public class ExecutorEntity {
     private String phone;
 
     @NotBlank
-    @Min(value = 3)
+    @Size(min = 3)
     private String name;
 
     private String organization;

@@ -1,8 +1,8 @@
-package ru.fast.bills.dao.entities;
+package ru.fast.bills.data.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -26,7 +26,7 @@ public class ClaimEntity {
     private UUID id;
 
     @NotBlank
-    @Max(50)
+    @Size(max = 50)
     private String title;
 
     @NotBlank

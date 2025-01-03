@@ -1,4 +1,4 @@
-package ru.fast.bills.dao.entities;
+package ru.fast.bills.data.models;
 
 import jakarta.persistence.Embeddable;
 
