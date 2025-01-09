@@ -6,8 +6,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Setter
 @Getter
 @Entity
@@ -28,6 +26,4 @@ public class ExecutorEntity {
 
     private String organization;
 
-    @OneToMany(mappedBy = "executor")
-    private List<ClaimEntity> claims;
 }

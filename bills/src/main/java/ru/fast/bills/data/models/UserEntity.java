@@ -9,7 +9,6 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -32,9 +31,6 @@ public class UserEntity {
     @NotBlank
     @Size(min = 3)
     private String password;
-
-    @OneToMany(mappedBy = "user")
-    private List<ClaimEntity> claims;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

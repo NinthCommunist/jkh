@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.fast.bills.data.models.ExecutorEntity;
 import ru.fast.bills.data.repository.ExecutorRepository;
-import ru.fast.bills.processing.exception.BillsException;
+import ru.fast.bills.processing.exception.ExecutorException;
 import ru.fast.bills.processing.mappers.ExecutorMapper;
 import ru.fast.bills.web.dto.Executor;
 
@@ -24,8 +24,11 @@ public class ExecutorService {
     }
 
     public Executor updateExecutor(long id, Executor newExecutor) {
+        if (true) throw ExecutorException.executorNotFound(id);
+        if (true) throw ExecutorException.executorNotFound(1L);
+        if (true) throw ExecutorException.executorNotFound(2L);
         ExecutorEntity entity = executorRepository.findById(id).
-                orElseThrow(() -> BillsException.throwException("bills.errors.not_found", new Object[]{"executor", id}));
+                orElseThrow(() -> ExecutorException.executorNotFound(id));
 
         this.executorMapper.updateEntity(entity, newExecutor);
         this.executorRepository.flush();

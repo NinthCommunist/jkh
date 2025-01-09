@@ -6,11 +6,13 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import static org.hibernate.annotations.UuidGenerator.Style.TIME;
 
 @Setter
 @Getter
@@ -19,10 +21,8 @@ import java.util.UUID;
 public class ClaimEntity {
     @Id
     @Column(name = "id", nullable = false)
-    @GenericGenerator(
-            name = "UUID",
-            type = org.hibernate.id.uuid.UuidGenerator.class
-    )
+    @UuidGenerator(style = TIME)
+    @GeneratedValue
     private UUID id;
 
     @NotBlank
