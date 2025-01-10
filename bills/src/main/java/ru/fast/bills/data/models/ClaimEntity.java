@@ -36,11 +36,11 @@ public class ClaimEntity {
     private Address address;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", unique = true)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "executor_id", unique = true)
+    @JoinColumn(name = "executor_id", nullable = true)
     private ExecutorEntity executor;
 
     @CreationTimestamp
@@ -48,6 +48,5 @@ public class ClaimEntity {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
 
 }

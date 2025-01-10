@@ -31,12 +31,8 @@
     <changeSet id="create-users"
                author="dev">
         <createTable tableName="users" schemaName="bills">
-            <column autoIncrement="true"
-                    name="id"
-                    type="BIGINT">
-                <constraints nullable="false"
-                             primaryKey="true"
-                             primaryKeyName="pk_userentity"/>
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_userentity"/>
             </column>
             <column name="email"
                     type="VARCHAR(255)"/>
@@ -63,7 +59,7 @@
             <column name="definition"
                     type="VARCHAR(255)"/>
             <column name="user_id"
-                    type="BIGINT"/>
+                    type="UUID"/>
             <column name="executor_id"
                     type="BIGINT"/>
             <column name="created_at"

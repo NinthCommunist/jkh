@@ -7,8 +7,12 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
+
+import static org.hibernate.annotations.UuidGenerator.Style.TIME;
 
 @Getter
 @Setter
@@ -17,9 +21,10 @@ import java.time.LocalDateTime;
 public class UserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    @UuidGenerator(style = TIME)
+    @GeneratedValue
+    private UUID id;
 
     @Email
     private String email;
