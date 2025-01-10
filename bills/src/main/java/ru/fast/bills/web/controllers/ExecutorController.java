@@ -1,5 +1,6 @@
 package ru.fast.bills.web.controllers;
 
+import com.github.fge.jsonpatch.JsonPatch;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -8,12 +9,19 @@ import org.springframework.web.bind.annotation.*;
 import ru.fast.bills.services.ExecutorService;
 import ru.fast.bills.web.dto.Executor;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/executors")
 public class ExecutorController {
 
     private final ExecutorService executorService;
+
+    @GetMapping
+    public ResponseEntity<List<Executor>> getExecutorList() {
+        return ResponseEntity.ok(executorService.getExecutors());
+    }
 
     @PostMapping
     public ResponseEntity<Executor> createExecutor(@RequestBody @Valid Executor executor) {
@@ -28,6 +36,18 @@ public class ExecutorController {
 
         Executor executor = executorService.updateExecutor(executorId, newExecutor);
         return ResponseEntity.ok(executor);
+    }
 
+    @PatchMapping(path = "{executorId:\\d+}")
+    public ResponseEntity<Executor> patchExecutor(@PathVariable("executorId") long executorId,
+                                                  @RequestBody JsonPatch patch) {
+        Executor patchedExecutor = executorService.patchExecutor(executorId, patch);
+        return ResponseEntity.ok(patchedExecutor);
+    }
+
+    @DeleteMapping(path = "{executorId:\\d+}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteExecutor(@PathVariable("executorId") long executorId) {
+        executorService.deleteExecutor(executorId);
     }
 }
