@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="create-mediator" author="dev">
+        <createTable tableName="mediator" schemaName="bills">
+            <column autoIncrement="true"
+                    name="id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_mediator"/>
+            </column>
+            <column name="service_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-mediator-roles" author="dev">
+        <createTable tableName="mediator_roles" schemaName="bills">
+            <column autoIncrement="true"
+                    name="id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_mediator_roles"/>
+            </column>
+            <column name="authority" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-mediator2roles" author="dev">
+        <createTable tableName="mediator2roles" schemaName="bills">
+            <column name="mediator_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+        <addForeignKeyConstraint baseTableName="mediator2roles"
+                                 baseColumnNames="mediator_id"
+                                 baseTableSchemaName="bills"
+                                 referencedTableName="mediator"
+                                 referencedTableSchemaName="bills"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_mediator"/>
+        <addForeignKeyConstraint baseTableName="mediator2roles"
+                                 baseColumnNames="role_id"
+                                 baseTableSchemaName="bills"
+                                 referencedTableName="mediator_roles"
+                                 referencedColumnNames="id"
+                                 referencedTableSchemaName="bills"
+                                 constraintName="fk_role"/>
+    </changeSet>
+
+    <changeSet id="insert-base-roles" author="dev">
+        <insert tableName="mediator_roles" schemaName="bills">
+            <column name="authority" value="SUPER_ADMIN"/>
+        </insert>
+        <insert tableName="mediator_roles" schemaName="bills">
+            <column name="authority" value="MOBILE_APP"/>
+        </insert>
+        <insert tableName="mediator_roles" schemaName="bills">
+            <column name="authority" value="STAFF_APP"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
