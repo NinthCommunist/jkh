@@ -37,7 +37,7 @@ public class WebExceptionHandler {
 
     @ExceptionHandler(BillsAbstractException.class)
     public ResponseEntity<List<ErrorResponse>> billsAbstractExceptionHandler(Locale locale, BillsAbstractException ex) {
-        log.info("bills exception " + ex.getMessage());
+        log.info("bills exception " + ex.getField());
 
         String message = messageSource.getMessage(ex.getCode(), ex.getParams(), locale);
         ErrorResponse errorResponse = new ErrorResponse(ex.getField(), message);

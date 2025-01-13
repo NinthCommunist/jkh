@@ -27,18 +27,16 @@ public class ExecutorService {
     public Executor createExecutor(Executor executor) {
         ExecutorEntity entity = this.executorMapper.toEntity(executor);
 
-        ExecutorEntity executorEntity = this.executorRepository.saveAndFlush(entity);
+        ExecutorEntity executorEntity = this.executorRepository.save(entity);
         return this.executorMapper.toDto(executorEntity);
     }
 
     @Transactional
     public Executor updateExecutor(long id, Executor newExecutor) {
-        ExecutorEntity entity = executorRepository.findById(id)
+        ExecutorEntity entity = this.executorRepository.findById(id)
                 .orElseThrow(() -> ExecutorException.executorNotFound(id));
 
         this.executorMapper.updateEntity(entity, newExecutor);
-        this.executorRepository.flush();
-
         return this.executorMapper.toDto(entity);
     }
 
@@ -48,29 +46,24 @@ public class ExecutorService {
 
     @Transactional
     public Executor patchExecutor(long id, JsonPatch patch) {
-        Executor executor = findExtractorOrElseThrow(id);
+        ExecutorEntity executorEntity = this.executorRepository.findById(id).orElseThrow(() -> ExecutorException.executorNotFound(id));
+
+        Executor executor = this.executorMapper.toDto(executorEntity);
         executor = applyPatchToCustomer(patch, executor);
 
-        executorRepository.saveAndFlush(executorMapper.toEntity(executor));
-        return executor;
+        this.executorMapper.updateEntity(executorEntity, executor);
+        return this.executorMapper.toDto(executorEntity);
     }
 
     public void deleteExecutor(long executorId) {
         executorRepository.deleteById(executorId);
-        executorRepository.flush();
-    }
-
-    private Executor findExtractorOrElseThrow(long id) {
-        return this.executorRepository.findById(id)
-                .map(executorMapper::toDto)
-                .orElseThrow(() -> ExecutorException.executorNotFound(id));
     }
 
     @SneakyThrows
     private Executor applyPatchToCustomer(
             JsonPatch patch, Executor targetCustomer) {
-        JsonNode patched = patch.apply(objectMapper.convertValue(targetCustomer, JsonNode.class));
-        return objectMapper.treeToValue(patched, Executor.class);
+        JsonNode patched = patch.apply(this.objectMapper.convertValue(targetCustomer, JsonNode.class));
+        return this.objectMapper.treeToValue(patched, Executor.class);
     }
 
 }
