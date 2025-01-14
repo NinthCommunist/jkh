@@ -21,7 +21,7 @@ public class AuthException extends BillsAbstractException {
         return new AuthException("roles", "bills.errors.auth.roles.list_isEmpty");
     }
 
-    public static AuthException loginError() {
-        return new AuthException("login", "bills.errors.auth.mediator.login_incorrect");
+    public static AuthException tokenNotValid(String token) {
+        return new AuthException(token, "bills.errors.auth.token.not_valid", new Object[]{token});
     }
 }

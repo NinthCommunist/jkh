@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import ru.fast.bills.security.web.AuthenticationFilter;
 
 @EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true)
+@EnableMethodSecurity()
 @Configuration
 @SecurityScheme(
         name = "BearerToken",
@@ -68,7 +69,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(req -> req.requestMatchers("*/api-docs/**", "/swagger-ui/*",
                                 "/swagger-ui/index.html",
                                 "/error",
-                                "auth/login").permitAll()
+                                "auth/*").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(m -> m.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(h -> h
@@ -81,13 +82,11 @@ public class WebSecurityConfig {
                             response.getWriter().write(accessDeniedException.getMessage());
                         })
                 )
-                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//                .logout(logout ->
-//                        logout.logoutUrl("/auth/logout")
-//                                .addLogoutHandler(logoutHandler)
-//                                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
-//                );
-        //
+                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .logout(logout ->
+                        logout.logoutUrl("/auth/logout")
+                                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()));
+
 
         return http.build();
     }

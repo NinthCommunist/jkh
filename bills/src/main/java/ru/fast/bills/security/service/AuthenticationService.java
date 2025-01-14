@@ -13,6 +13,7 @@ import ru.fast.bills.security.data.models.MediatorRoleEntity;
 import ru.fast.bills.security.data.repository.MediatorRolesRepository;
 import ru.fast.bills.security.exceptions.AuthException;
 import ru.fast.bills.security.web.dto.LoginRequest;
+import ru.fast.bills.security.web.dto.RefreshTokenRequest;
 import ru.fast.bills.security.web.dto.RegistrationRequest;
 import ru.fast.bills.security.web.dto.TokenResponse;
 
@@ -57,5 +58,10 @@ public class AuthenticationService {
         String refreshToken = this.jwtProvider.refreshTokenFor(authenticate);
 
         return new TokenResponse(accessToken, refreshToken);
+    }
+
+    public String refreshToken(RefreshTokenRequest refreshTokenRequest) {
+        Authentication authentication = this.jwtProvider.parseAuthentication(refreshTokenRequest.refresh());
+        return this.jwtProvider.accessTokenFor(authentication);
     }
 }

@@ -1,10 +1,12 @@
 package ru.fast.bills.web.advices;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -27,7 +29,7 @@ public class WebExceptionHandler {
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<List<ErrorResponse>> bindExceptionHandler(BindException ex) {
-        log.info("bind exception", ex.getMessage());
+        log.info("Bind exception ", ex.getMessage());
 
         List<ErrorResponse> errorResponseList = mapToErrorResponse(ex.getAllErrors());
 
@@ -48,12 +50,22 @@ public class WebExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<List<ErrorResponse>> bindExceptionHandler(ConstraintViolationException ex) {
-        log.info("Constraint violation exception" + ex.getMessage());
+        log.info("Constraint violation exception " + ex.getMessage());
 
         List<ErrorResponse> errorResponseList = mapToErrorResponse(ex.getConstraintViolations());
 
         return ResponseEntity.badRequest()
                 .body(errorResponseList);
+    }
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<List<ErrorResponse>> parseJwtException(JwtException ex) {
+        log.info("Jwt parse exception " + ex.getMessage());
+
+        ErrorResponse errorResponse = new ErrorResponse("Jwt authentication token", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Collections.singletonList(errorResponse));
     }
 
 

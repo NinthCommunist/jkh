@@ -1,5 +1,6 @@
 package ru.fast.bills.security.web;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +32,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                 Authentication authentication = this.jwtProvider.parseAuthentication(jwt);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
+        } catch (JwtException jwtException) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.getWriter().write(jwtException.getLocalizedMessage());
         } finally {
             filterChain.doFilter(request, response);
         }
