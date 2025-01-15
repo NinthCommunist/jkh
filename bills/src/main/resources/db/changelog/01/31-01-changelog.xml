@@ -15,7 +15,7 @@
                              primaryKeyName="pk_mediator"/>
             </column>
             <column name="service_name" type="varchar(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="password" type="varchar(255)">
                 <constraints nullable="false"/>
@@ -36,7 +36,7 @@
                              primaryKeyName="pk_mediator_roles"/>
             </column>
             <column name="authority" type="varchar(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
     </changeSet>

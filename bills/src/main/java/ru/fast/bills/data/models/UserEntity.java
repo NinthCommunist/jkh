@@ -32,6 +32,7 @@ public class UserEntity {
 
     @NotBlank
     @Size(min = 3)
+    @Column(unique = true)
     private String nickname;
 
     @CreationTimestamp

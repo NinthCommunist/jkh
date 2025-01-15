@@ -24,6 +24,7 @@ public class MediatorEntity {
 
     @NotBlank
     @Size(min = 3)
+    @Column(unique = true)
     private String serviceName;
 
     @NotBlank
