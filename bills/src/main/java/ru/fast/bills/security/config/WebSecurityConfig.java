@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CsrfFilter;
 import ru.fast.bills.security.web.AuthenticationJWTFilter;
+import ru.fast.bills.security.web.JwtLogoutHandler;
 
 @EnableWebSecurity
 @EnableMethodSecurity()
@@ -46,7 +47,7 @@ public class WebSecurityConfig {
     private final String[] WHITE_LIST = {"*/api-docs/**", "/swagger-ui/*",
             "/swagger-ui/index.html",
             "/error",
-            "auth/*"};
+            "auth/login"};
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -66,7 +67,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationJWTFilter authenticationJWTFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtLogoutHandler jwtLogoutHandler, AuthenticationJWTFilter authenticationJWTFilter) throws Exception {
         http
                 .csrf(c -> c.ignoringRequestMatchers("/auth/login"))
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -86,8 +87,8 @@ public class WebSecurityConfig {
                 .addFilterBefore(authenticationJWTFilter, CsrfFilter.class)
                 .logout(logout ->
                         logout.logoutUrl("/auth/logout")
+                                .addLogoutHandler(jwtLogoutHandler)
                                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()));
-
 
         return http.build();
     }

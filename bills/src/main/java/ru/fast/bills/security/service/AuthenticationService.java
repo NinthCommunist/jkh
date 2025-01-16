@@ -1,6 +1,7 @@
 package ru.fast.bills.security.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.fast.bills.data.models.MediatorEntity;
 import ru.fast.bills.data.repository.MediatorRepository;
 import ru.fast.bills.security.data.models.MediatorRoleEntity;
+import ru.fast.bills.security.data.repository.JwtRepository;
 import ru.fast.bills.security.data.repository.MediatorRolesRepository;
 import ru.fast.bills.security.exceptions.AuthException;
 import ru.fast.bills.security.web.dto.LoginRequest;
@@ -22,10 +24,12 @@ import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationService {
 
     private final MediatorRepository mediatorRepository;
     private final MediatorRolesRepository rolesRepository;
+    private final JwtRepository jwtRepository;
 
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
@@ -57,8 +61,10 @@ public class AuthenticationService {
                 .authenticate(new UsernamePasswordAuthenticationToken(login.login(), login.password()));
 
         String accessToken = this.jwtProvider.accessTokenFor(authenticate);
+        this.jwtRepository.saveToken(authenticate.getName(), accessToken);
         String refreshToken = this.jwtProvider.refreshTokenFor(authenticate);
 
+        log.debug("Login success for {}", authenticate.getName());
         return new TokenResponse(accessToken, refreshToken);
     }
 

@@ -12,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -23,21 +24,21 @@ public class JwtProvider {
     private String secret;
 
     @Value("${app.security.jwt.access.expiration}")
-    private long accessExpiration;
+    private Duration accessExpiration;
 
     @Value("${app.security.jwt.refresh.expiration}")
-    private long refreshExpiration;
+    private Duration refreshExpiration;
 
 
     public String accessTokenFor(final Authentication authentication) {
         Date issuedAt = new Date();
-        Date expiration = new Date(issuedAt.getTime() + accessExpiration);
+        Date expiration = new Date(issuedAt.getTime() + accessExpiration.toMillis());
         return generateToken(authentication, issuedAt, expiration);
     }
 
     public String refreshTokenFor(final Authentication authentication) {
         Date issuedAt = new Date();
-        Date expiration = new Date(issuedAt.getTime() + refreshExpiration);
+        Date expiration = new Date(issuedAt.getTime() + refreshExpiration.toMillis());
         return generateToken(authentication, issuedAt, expiration);
     }
 
