@@ -9,11 +9,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import ru.fast.bills.data.models.MediatorEntity;
 import ru.fast.bills.data.repository.MediatorRepository;
+import ru.fast.bills.security.data.repository.MediatorRolesRepository;
 
 @Component
 @RequiredArgsConstructor
 public class MediatorUserDetailsServiceImpl implements UserDetailsService {
     private final MediatorRepository mediatorRepository;
+    private final MediatorRolesRepository rolesRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -22,6 +24,6 @@ public class MediatorUserDetailsServiceImpl implements UserDetailsService {
 
         return new User(mediatorEntity.getServiceName(),
                 mediatorEntity.getPassword(),
-                mediatorEntity.getRoles().stream().map(r -> new SimpleGrantedAuthority(r.getAuthority().name())).toList());
+                rolesRepository.findByMediator_Id(mediatorEntity.getId()).stream().map(r -> new SimpleGrantedAuthority(r.getAuthority().name())).toList());
     }
 }

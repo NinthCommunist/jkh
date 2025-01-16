@@ -18,6 +18,7 @@ import ru.fast.bills.security.web.dto.RegistrationRequest;
 import ru.fast.bills.security.web.dto.TokenResponse;
 
 import java.util.Collection;
+import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +46,8 @@ public class AuthenticationService {
         MediatorEntity mediatorEntity = new MediatorEntity();
         mediatorEntity.setServiceName(serviceName);
         mediatorEntity.setPassword(this.passwordEncoder.encode(registr.password()));
-        mediatorEntity.setRoles(roles);
+
+        roles.forEach(r -> r.setMediator(Collections.singletonList(mediatorEntity)));
 
         this.mediatorRepository.save(mediatorEntity);
     }

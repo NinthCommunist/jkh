@@ -22,8 +22,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ru.fast.bills.security.web.AuthenticationFilter;
+import org.springframework.security.web.csrf.CsrfFilter;
+import ru.fast.bills.security.web.AuthenticationJWTFilter;
 
 @EnableWebSecurity
 @EnableMethodSecurity()
@@ -43,6 +43,11 @@ import ru.fast.bills.security.web.AuthenticationFilter;
 })
 public class WebSecurityConfig {
 
+    private final String[] WHITE_LIST = {"*/api-docs/**", "/swagger-ui/*",
+            "/swagger-ui/index.html",
+            "/error",
+            "auth/*"};
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -61,15 +66,11 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationFilter authenticationFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationJWTFilter authenticationJWTFilter) throws Exception {
         http
-                .cors(AbstractHttpConfigurer::disable)
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(c -> c.ignoringRequestMatchers("/auth/login"))
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req -> req.requestMatchers("*/api-docs/**", "/swagger-ui/*",
-                                "/swagger-ui/index.html",
-                                "/error",
-                                "auth/*").permitAll()
+                .authorizeHttpRequests(req -> req.requestMatchers(WHITE_LIST).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(m -> m.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(h -> h
@@ -82,7 +83,7 @@ public class WebSecurityConfig {
                             response.getWriter().write(accessDeniedException.getMessage());
                         })
                 )
-                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(authenticationJWTFilter, CsrfFilter.class)
                 .logout(logout ->
                         logout.logoutUrl("/auth/logout")
                                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()));

@@ -8,4 +8,6 @@ import java.util.Collection;
 
 public interface MediatorRolesRepository extends JpaRepository<MediatorRoleEntity, Long> {
     Collection<MediatorRoleEntity> findAllByAuthorityIn(Iterable<MediatorAuthority> mediatorAuthorities);
+
+    Collection<MediatorRoleEntity> findByMediator_Id(Long mediatorId);
 }

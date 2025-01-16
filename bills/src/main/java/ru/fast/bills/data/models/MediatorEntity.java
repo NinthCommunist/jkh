@@ -6,10 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import ru.fast.bills.security.data.models.MediatorRoleEntity;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 
 @Getter
 @Setter
@@ -33,9 +31,4 @@ public class MediatorEntity {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @ManyToMany
-    @JoinTable(schema = "bills", name = "mediator2roles",
-            joinColumns = @JoinColumn(name = "mediator_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Collection<MediatorRoleEntity> roles;
 }
