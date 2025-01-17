@@ -34,20 +34,20 @@ public class ExecutorController {
     public ResponseEntity<Executor> updateExecutor(@PathVariable("executorId") long executorId,
                                                    @RequestBody @Valid Executor newExecutor) {
 
-        Executor executor = executorService.updateExecutor(executorId, newExecutor);
+        Executor executor = this.executorService.updateExecutor(executorId, newExecutor);
         return ResponseEntity.ok(executor);
     }
 
     @PatchMapping(path = "{executorId:\\d+}")
     public ResponseEntity<Executor> patchExecutor(@PathVariable("executorId") long executorId,
                                                   @RequestBody JsonPatch patch) {
-        Executor patchedExecutor = executorService.patchExecutor(executorId, patch);
+        Executor patchedExecutor = this.executorService.patchExecutor(executorId, patch);
         return ResponseEntity.ok(patchedExecutor);
     }
 
     @DeleteMapping(path = "{executorId:\\d+}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteExecutor(@PathVariable("executorId") long executorId) {
-        executorService.deleteExecutor(executorId);
+        this.executorService.deleteExecutor(executorId);
     }
 }

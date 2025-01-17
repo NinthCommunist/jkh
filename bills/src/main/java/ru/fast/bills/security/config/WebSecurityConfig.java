@@ -47,7 +47,7 @@ public class WebSecurityConfig {
     private final String[] WHITE_LIST = {"*/api-docs/**", "/swagger-ui/*",
             "/swagger-ui/index.html",
             "/error",
-            "auth/login"};
+            "auth/*"};
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -69,7 +69,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtLogoutHandler jwtLogoutHandler, AuthenticationJWTFilter authenticationJWTFilter) throws Exception {
         http
-                .csrf(c -> c.ignoringRequestMatchers("/auth/login"))
+                .csrf(c -> c.ignoringRequestMatchers("/auth/*"))
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> req.requestMatchers(WHITE_LIST).permitAll()
                         .anyRequest().authenticated())
