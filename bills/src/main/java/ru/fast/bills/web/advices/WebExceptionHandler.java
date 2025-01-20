@@ -13,6 +13,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.fast.bills.processing.exception.BillsAbstractException;
+import ru.fast.bills.processing.exception.BillsErrorsContainer;
 import ru.fast.bills.web.dto.ErrorResponse;
 
 import java.util.Collection;
@@ -31,7 +32,7 @@ public class WebExceptionHandler {
     public ResponseEntity<List<ErrorResponse>> bindExceptionHandler(BindException ex) {
         log.info("Bind exception ", ex.getMessage());
 
-        List<ErrorResponse> errorResponseList = mapToErrorResponse(ex.getAllErrors());
+        List<ErrorResponse> errorResponseList = this.mapToErrorResponse(ex.getAllErrors());
 
         return ResponseEntity.badRequest()
                 .body(errorResponseList);
@@ -41,7 +42,7 @@ public class WebExceptionHandler {
     public ResponseEntity<List<ErrorResponse>> billsAbstractExceptionHandler(Locale locale, BillsAbstractException ex) {
         log.info("bills exception " + ex.getField());
 
-        String message = messageSource.getMessage(ex.getCode(), ex.getParams(), locale);
+        String message = this.messageSource.getMessage(ex.getCode(), ex.getParams(), locale);
         ErrorResponse errorResponse = new ErrorResponse(ex.getField(), message);
 
         return ResponseEntity.badRequest()
@@ -52,7 +53,7 @@ public class WebExceptionHandler {
     public ResponseEntity<List<ErrorResponse>> bindExceptionHandler(ConstraintViolationException ex) {
         log.info("Constraint violation exception " + ex.getMessage());
 
-        List<ErrorResponse> errorResponseList = mapToErrorResponse(ex.getConstraintViolations());
+        List<ErrorResponse> errorResponseList = this.mapToErrorResponse(ex.getConstraintViolations());
 
         return ResponseEntity.badRequest()
                 .body(errorResponseList);
@@ -66,6 +67,16 @@ public class WebExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(Collections.singletonList(errorResponse));
+    }
+
+    @ExceptionHandler(BillsErrorsContainer.class)
+    public ResponseEntity<List<ErrorResponse>> billsErrorContainer(BillsErrorsContainer ex) {
+        log.info("Handle error container");
+
+        List<ErrorResponse> errorResponseList = ex.getErrors();
+
+        return ResponseEntity.badRequest()
+                .body(errorResponseList);
     }
 
 

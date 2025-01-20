@@ -11,3 +11,5 @@ public class JkhApplication {
 	}
 
 }
+
+//TODO refresh token + hasAuthority+развесть @PREAuthorize      SQL n+1    + validators   + pagination   +inspection for this.   + patcher for all services

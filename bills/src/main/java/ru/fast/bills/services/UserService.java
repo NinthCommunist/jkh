@@ -32,10 +32,14 @@ public class UserService {
 
     @Transactional
     public User updateUser(UUID userId, User newUser) {
-        UserEntity userEntity = this.userRepository.findById(userId)
-                .orElseThrow(() -> UserException.userNotFound(userId));
+        UserEntity userEntity = this.findUserEntity(userId);
         this.userMapper.updateEntity(userEntity, newUser);
         return this.userMapper.toDto(userEntity);
+    }
+
+    public UserEntity findUserEntity(UUID userId) {
+        return this.userRepository.findById(userId)
+                .orElseThrow(() -> UserException.userNotFound(userId));
     }
 
     public void deleteUser(UUID userId) {

@@ -22,7 +22,7 @@ public class MediatorRoleEntity {
     @Enumerated(value = EnumType.STRING)
     private MediatorAuthority authority;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(schema = "bills", name = "mediator2roles",
             inverseJoinColumns = @JoinColumn(name = "mediator_id"),
             joinColumns = @JoinColumn(name = "role_id"))

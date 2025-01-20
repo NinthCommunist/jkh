@@ -20,7 +20,7 @@ public class ExecutorController {
 
     @GetMapping
     public ResponseEntity<List<Executor>> getExecutorList() {
-        return ResponseEntity.ok(executorService.getExecutors());
+        return ResponseEntity.ok(this.executorService.getExecutors());
     }
 
     @PostMapping

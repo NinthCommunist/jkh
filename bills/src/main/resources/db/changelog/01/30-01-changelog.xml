@@ -78,8 +78,8 @@
                     type="VARCHAR(255)"/>
         </createTable>
 
-        <addUniqueConstraint columnNames="user_id"
-                             constraintName="uc_claimentity_user"
+        <addUniqueConstraint columnNames="id"
+                             constraintName="uc_claim_id"
                              schemaName="bills"
                              tableName="claim"/>
         <addForeignKeyConstraint baseColumnNames="user_id"
@@ -89,10 +89,6 @@
                                  referencedColumnNames="id"
                                  referencedTableSchemaName="bills"
                                  referencedTableName="users"/>
-        <addUniqueConstraint columnNames="executor_id"
-                             constraintName="uc_claimentity_executor"
-                             schemaName="bills"
-                             tableName="claim"/>
         <addForeignKeyConstraint baseColumnNames="executor_id"
                                  baseTableName="claim"
                                  baseTableSchemaName="bills"

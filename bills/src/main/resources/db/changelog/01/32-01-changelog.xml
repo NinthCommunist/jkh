@@ -11,4 +11,8 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="constraint-notnull-user-for-claims" author="dev">
+        <addNotNullConstraint tableName="claim" schemaName="bills" columnName="user_id"/>
+    </changeSet>
+
 </databaseChangeLog>

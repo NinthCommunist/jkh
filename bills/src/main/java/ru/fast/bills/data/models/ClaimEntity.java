@@ -12,7 +12,7 @@ import org.hibernate.annotations.UuidGenerator;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static org.hibernate.annotations.UuidGenerator.Style.TIME;
+import static org.hibernate.annotations.UuidGenerator.Style.RANDOM;
 
 @Setter
 @Getter
@@ -21,7 +21,7 @@ import static org.hibernate.annotations.UuidGenerator.Style.TIME;
 public class ClaimEntity {
     @Id
     @Column(name = "id", nullable = false)
-    @UuidGenerator(style = TIME)
+    @UuidGenerator(style = RANDOM)
     @GeneratedValue
     private UUID id;
 
@@ -35,11 +35,11 @@ public class ClaimEntity {
     @Embedded
     private Address address;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "executor_id", nullable = true)
     private ExecutorEntity executor;
 

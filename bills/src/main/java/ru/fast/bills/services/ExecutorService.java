@@ -33,11 +33,15 @@ public class ExecutorService {
 
     @Transactional
     public Executor updateExecutor(long id, Executor newExecutor) {
-        ExecutorEntity entity = this.executorRepository.findById(id)
-                .orElseThrow(() -> ExecutorException.executorNotFound(id));
+        ExecutorEntity entity = this.findExecutorEntity(id);
 
         this.executorMapper.updateEntity(entity, newExecutor);
         return this.executorMapper.toDto(entity);
+    }
+
+    public ExecutorEntity findExecutorEntity(long id) {
+        return this.executorRepository.findById(id)
+                .orElseThrow(() -> ExecutorException.executorNotFound(id));
     }
 
     public List<Executor> getExecutors() {
@@ -46,17 +50,17 @@ public class ExecutorService {
 
     @Transactional
     public Executor patchExecutor(long id, JsonPatch patch) {
-        ExecutorEntity executorEntity = this.executorRepository.findById(id).orElseThrow(() -> ExecutorException.executorNotFound(id));
+        ExecutorEntity executorEntity = this.findExecutorEntity(id);
 
         Executor executor = this.executorMapper.toDto(executorEntity);
-        executor = applyPatchToCustomer(patch, executor);
+        executor = this.applyPatchToCustomer(patch, executor);
 
         this.executorMapper.updateEntity(executorEntity, executor);
         return this.executorMapper.toDto(executorEntity);
     }
 
     public void deleteExecutor(long executorId) {
-        executorRepository.deleteById(executorId);
+        this.executorRepository.deleteById(executorId);
     }
 
     @SneakyThrows
