@@ -45,7 +45,7 @@ public class ExecutorService {
     }
 
     public List<Executor> getExecutors() {
-        return this.executorMapper.toDtoList(executorRepository.findAll());
+        return this.executorMapper.toDtoList(this.executorRepository.findAll());
     }
 
     @Transactional
