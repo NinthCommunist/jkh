@@ -5,12 +5,16 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.fast.bills.services.ClaimService;
 import ru.fast.bills.web.dto.Claim;
 
 import java.util.List;
 import java.util.UUID;
+
+import static ru.fast.bills.utils.AuthorityConstant.SUPER_ADMIN;
+import static ru.fast.bills.utils.AuthorityConstant.SUPER_ADMIN_OR_STAFF_APP;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,8 +29,15 @@ public class ClaimController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newClaim);
     }
 
-
     @GetMapping
+    public ResponseEntity<List<Claim>> getByUser(@RequestHeader("user_id") UUID userId) {
+        List<Claim> claims = this.claimService.claimsByUser(userId);
+        return ResponseEntity.ok(claims);
+    }
+
+
+    @GetMapping("/all")
+    @PreAuthorize(SUPER_ADMIN)
     public ResponseEntity<List<Claim>> getAll() {
         return ResponseEntity.ok(this.claimService.getAll());
     }
@@ -46,11 +57,12 @@ public class ClaimController {
 
     @DeleteMapping(path = "{claimId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void patchClaim(@PathVariable("claimId") UUID claimId) {
+    public void deleteClaim(@PathVariable("claimId") UUID claimId) {
         this.claimService.delete(claimId);
     }
 
     @PostMapping("{claimId}/executor")
+    @PreAuthorize(SUPER_ADMIN_OR_STAFF_APP)
     public ResponseEntity<Claim> addExecutor(@PathVariable("claimId") UUID claimId, @RequestParam("executorId") long executorId) {
         Claim claim = this.claimService.addExecutorForClaim(claimId, executorId);
         return ResponseEntity.status(HttpStatus.CREATED).body(claim);

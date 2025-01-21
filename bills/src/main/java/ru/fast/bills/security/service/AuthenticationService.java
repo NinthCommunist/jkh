@@ -70,6 +70,8 @@ public class AuthenticationService {
 
     public String refreshToken(RefreshTokenRequest refreshTokenRequest) {
         Authentication authentication = this.jwtProvider.parseAuthentication(refreshTokenRequest.refresh());
-        return this.jwtProvider.accessTokenFor(authentication);
+        String accessToken = this.jwtProvider.accessTokenFor(authentication);
+        this.jwtRepository.saveToken(authentication.getName(), accessToken);
+        return accessToken;
     }
 }

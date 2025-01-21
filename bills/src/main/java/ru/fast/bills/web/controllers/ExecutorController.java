@@ -5,14 +5,18 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.fast.bills.services.ExecutorService;
 import ru.fast.bills.web.dto.Executor;
 
 import java.util.List;
 
+import static ru.fast.bills.utils.AuthorityConstant.SUPER_ADMIN;
+
 @RestController
 @RequiredArgsConstructor
+@PreAuthorize(SUPER_ADMIN)
 @RequestMapping(path = "/executors")
 public class ExecutorController {
 

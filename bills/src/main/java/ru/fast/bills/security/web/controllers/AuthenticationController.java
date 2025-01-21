@@ -13,6 +13,8 @@ import ru.fast.bills.security.web.dto.TokenResponse;
 
 import java.util.Map;
 
+import static ru.fast.bills.utils.AuthorityConstant.SUPER_ADMIN;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
@@ -21,7 +23,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/registration")
-    @PreAuthorize("hasAuthority('SUPER_ADMIN')")
+    @PreAuthorize(SUPER_ADMIN)
     @ResponseStatus(HttpStatus.OK)
     public void registration(@RequestBody RegistrationRequest registr) {
         this.authenticationService.registration(registr);

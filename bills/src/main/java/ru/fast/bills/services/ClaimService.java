@@ -79,4 +79,9 @@ public class ClaimService {
         claimEntity.setExecutor(executorEntity);
         return this.claimMapper.toDto(claimEntity);
     }
+
+    public List<Claim> claimsByUser(UUID userId) {
+        List<ClaimEntity> claimsByUserId = this.claimRepository.findAllByUser_Id(userId);
+        return this.claimMapper.toDtoList(claimsByUserId);
+    }
 }

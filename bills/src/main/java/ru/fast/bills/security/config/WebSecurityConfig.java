@@ -44,10 +44,10 @@ import ru.fast.bills.security.web.JwtLogoutHandler;
 })
 public class WebSecurityConfig {
 
-    private final String[] WHITE_LIST = {"*/api-docs/**", "/swagger-ui/*",
+    private final static String[] WHITE_LIST = {"*/api-docs/**", "/swagger-ui/*",
             "/swagger-ui/index.html",
             "/error",
-            "auth/*"};
+            "/auth/*"};
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -60,8 +60,8 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService) {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(passwordEncoder());
+    public AuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(passwordEncoder);
         provider.setUserDetailsService(userDetailsService);
         return provider;
     }
