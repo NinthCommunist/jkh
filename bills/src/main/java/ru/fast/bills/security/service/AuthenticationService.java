@@ -19,9 +19,6 @@ import ru.fast.bills.security.web.dto.RefreshTokenRequest;
 import ru.fast.bills.security.web.dto.RegistrationRequest;
 import ru.fast.bills.security.web.dto.TokenResponse;
 
-import java.util.Collection;
-import java.util.Collections;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -41,19 +38,15 @@ public class AuthenticationService {
         if (this.mediatorRepository.existsByServiceName(serviceName)) {
             throw AuthException.mediatorAlreadyRegistered(serviceName);
         }
-        Collection<MediatorRoleEntity> roles = this.rolesRepository.findAllByAuthorityIn(registr.roles());
-
-        if (roles.isEmpty()) {
-            throw AuthException.roleListIsEmpty();
-        }
+        MediatorRoleEntity role = this.rolesRepository
+                .findAllByAuthority(registr.role()).orElseThrow(AuthException::roleNotFound);
 
         MediatorEntity mediatorEntity = new MediatorEntity();
         mediatorEntity.setServiceName(serviceName);
         mediatorEntity.setPassword(this.passwordEncoder.encode(registr.password()));
+        MediatorEntity savedMediator = this.mediatorRepository.save(mediatorEntity);
 
-        roles.forEach(r -> r.setMediator(Collections.singletonList(mediatorEntity)));
-
-        this.mediatorRepository.save(mediatorEntity);
+        role.getMediators().add(savedMediator);
     }
 
     public TokenResponse login(LoginRequest login) {

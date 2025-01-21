@@ -24,6 +24,7 @@ public class MediatorUserDetailsServiceImpl implements UserDetailsService {
 
         return new User(mediatorEntity.getServiceName(),
                 mediatorEntity.getPassword(),
-                rolesRepository.findByMediator_Id(mediatorEntity.getId()).stream().map(r -> new SimpleGrantedAuthority(r.getAuthority().name())).toList());
+                this.rolesRepository.findByMediators_Id(mediatorEntity.getId()).stream()
+                        .map(r -> new SimpleGrantedAuthority(r.getAuthority().name())).toList());
     }
 }

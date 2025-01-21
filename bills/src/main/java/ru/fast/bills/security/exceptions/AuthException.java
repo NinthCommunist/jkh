@@ -17,8 +17,8 @@ public class AuthException extends BillsAbstractException {
         return new AuthException("serviceName", "bills.errors.auth.mediator.registered", new Object[]{serviceName});
     }
 
-    public static AuthException roleListIsEmpty() {
-        return new AuthException("roles", "bills.errors.auth.roles.list_isEmpty");
+    public static AuthException roleNotFound() {
+        return new AuthException("roles", "bills.errors.auth.roles.not_found");
     }
 
     public static AuthException tokenNotValid(String token) {

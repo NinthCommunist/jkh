@@ -32,14 +32,14 @@ public class JwtProvider {
 
     public String accessTokenFor(final Authentication authentication) {
         Date issuedAt = new Date();
-        Date expiration = new Date(issuedAt.getTime() + accessExpiration.toMillis());
-        return generateToken(authentication, issuedAt, expiration);
+        Date expiration = new Date(issuedAt.getTime() + this.accessExpiration.toMillis());
+        return this.generateToken(authentication, issuedAt, expiration);
     }
 
     public String refreshTokenFor(final Authentication authentication) {
         Date issuedAt = new Date();
-        Date expiration = new Date(issuedAt.getTime() + refreshExpiration.toMillis());
-        return generateToken(authentication, issuedAt, expiration);
+        Date expiration = new Date(issuedAt.getTime() + this.refreshExpiration.toMillis());
+        return this.generateToken(authentication, issuedAt, expiration);
     }
 
     private String generateToken(Authentication authentication, Date issuedAt, Date expiration) {
@@ -51,18 +51,18 @@ public class JwtProvider {
                                 .stream().map(GrantedAuthority::getAuthority).toList()))
                 .issuedAt(issuedAt)
                 .expiration(expiration)
-                .signWith(computeSignKey(), Jwts.SIG.HS256)
+                .signWith(this.computeSignKey(), Jwts.SIG.HS256)
                 .compact();
     }
 
     private SecretKey computeSignKey() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(this.secret));
     }
 
 
     public Authentication parseAuthentication(String jwt) {
         Claims claims = Jwts.parser()
-                .verifyWith(computeSignKey()).build()
+                .verifyWith(this.computeSignKey()).build()
                 .parseSignedClaims(jwt)
                 .getPayload();
         List<String> roles = claims.get("roles", List.class);

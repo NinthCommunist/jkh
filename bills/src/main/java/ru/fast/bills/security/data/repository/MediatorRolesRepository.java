@@ -5,9 +5,10 @@ import ru.fast.bills.security.data.models.MediatorAuthority;
 import ru.fast.bills.security.data.models.MediatorRoleEntity;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface MediatorRolesRepository extends JpaRepository<MediatorRoleEntity, Long> {
-    Collection<MediatorRoleEntity> findAllByAuthorityIn(Iterable<MediatorAuthority> mediatorAuthorities);
+    Optional<MediatorRoleEntity> findAllByAuthority(MediatorAuthority mediatorAuthorities);
 
-    Collection<MediatorRoleEntity> findByMediator_Id(Long mediatorId);
+    Collection<MediatorRoleEntity> findByMediators_Id(Long mediatorId);
 }

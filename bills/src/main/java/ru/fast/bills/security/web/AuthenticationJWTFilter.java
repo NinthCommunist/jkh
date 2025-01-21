@@ -32,10 +32,9 @@ public class AuthenticationJWTFilter extends OncePerRequestFilter {
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ") && SecurityContextHolder.getContext().getAuthentication() == null) {
                 String jwt = StringUtils.substringAfter(authorizationHeader, "Bearer ");
                 Authentication authentication = this.jwtProvider.parseAuthentication(jwt);
-
+                CsrfFilter.skipRequest(request);
                 if (this.tokenRepository.tokenExist(authentication.getName(), jwt)) {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                    CsrfFilter.skipRequest(request);
                 }
             }
         } catch (JwtException jwtException) {

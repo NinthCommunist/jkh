@@ -69,7 +69,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtLogoutHandler jwtLogoutHandler, AuthenticationJWTFilter authenticationJWTFilter) throws Exception {
         http
-                .csrf(c -> c.ignoringRequestMatchers("/auth/*"))
+                .csrf(c -> c.ignoringRequestMatchers(WHITE_LIST))
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> req.requestMatchers(WHITE_LIST).permitAll()
                         .anyRequest().authenticated())
