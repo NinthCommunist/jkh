@@ -12,4 +12,4 @@ public class JkhApplication {
 
 }
 
-//TODO  SQL n+1   + pagination   + patcher for all services
+//TODO  + pagination   + patcher for all services + findByUserId to cache

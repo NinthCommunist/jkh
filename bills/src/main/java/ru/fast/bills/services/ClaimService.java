@@ -15,6 +15,7 @@ import ru.fast.bills.processing.exception.ClaimException;
 import ru.fast.bills.processing.mappers.ClaimMapper;
 import ru.fast.bills.processing.validators.ClaimValidator;
 import ru.fast.bills.web.dto.Claim;
+import ru.fast.bills.web.dto.ClaimInfo;
 
 import java.util.List;
 import java.util.UUID;
@@ -41,7 +42,8 @@ public class ClaimService {
     }
 
     public List<Claim> getAll() {
-        return this.claimMapper.toDtoList(this.claimRepository.findAll());
+        List<ClaimEntity> allClaims = this.claimRepository.findAll();
+        return this.claimMapper.toDtoList(allClaims);
     }
 
     public Claim patchClaim(UUID claimId, JsonPatch patch) {
@@ -80,8 +82,13 @@ public class ClaimService {
         return this.claimMapper.toDto(claimEntity);
     }
 
-    public List<Claim> claimsByUser(UUID userId) {
-        List<ClaimEntity> claimsByUserId = this.claimRepository.findAllByUser_Id(userId);
-        return this.claimMapper.toDtoList(claimsByUserId);
+    public List<ClaimInfo> claimsInfoByUser(UUID userId) {
+        List<ClaimEntity> claimsByUserId = this.claimRepository.findLazyAllByUser_Id(userId);
+        return this.claimMapper.toInfoList(claimsByUserId);
+    }
+
+    public Claim getClaim(UUID claimId) {
+        ClaimEntity claimEntity = this.findClaimEntity(claimId);
+        return this.claimMapper.toDto(claimEntity);
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.fast.bills.services.ClaimService;
 import ru.fast.bills.web.dto.Claim;
+import ru.fast.bills.web.dto.ClaimInfo;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,8 +31,8 @@ public class ClaimController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Claim>> getByUser(@RequestHeader("user_id") UUID userId) {
-        List<Claim> claims = this.claimService.claimsByUser(userId);
+    public ResponseEntity<List<ClaimInfo>> getByUser(@RequestHeader("user_id") UUID userId) {
+        List<ClaimInfo> claims = this.claimService.claimsInfoByUser(userId);
         return ResponseEntity.ok(claims);
     }
 
@@ -66,5 +67,11 @@ public class ClaimController {
     public ResponseEntity<Claim> addExecutor(@PathVariable("claimId") UUID claimId, @RequestParam("executorId") long executorId) {
         Claim claim = this.claimService.addExecutorForClaim(claimId, executorId);
         return ResponseEntity.status(HttpStatus.CREATED).body(claim);
+    }
+
+    @GetMapping(path = "{claimId}")
+    public ResponseEntity<Claim> getClaim(@PathVariable("claimId") UUID claimId) {
+        Claim claim = this.claimService.getClaim(claimId);
+        return ResponseEntity.ok(claim);
     }
 }

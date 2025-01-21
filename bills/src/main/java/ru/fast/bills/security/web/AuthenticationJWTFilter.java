@@ -37,11 +37,10 @@ public class AuthenticationJWTFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
+            filterChain.doFilter(request, response);
         } catch (JwtException jwtException) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.getWriter().write(jwtException.getLocalizedMessage());
-        } finally {
-            filterChain.doFilter(request, response);
         }
     }
 }

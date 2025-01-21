@@ -4,6 +4,7 @@ import org.mapstruct.*;
 import ru.fast.bills.data.models.ClaimEntity;
 import ru.fast.bills.web.dto.Address;
 import ru.fast.bills.web.dto.Claim;
+import ru.fast.bills.web.dto.ClaimInfo;
 
 import java.util.List;
 
@@ -13,7 +14,11 @@ public abstract class ClaimMapper {
 
     public abstract Claim toDto(ClaimEntity claimEntity);
 
+    public abstract ClaimInfo toInfo(ClaimEntity claimEntity);
+
     public abstract List<Claim> toDtoList(List<ClaimEntity> claimEntities);
+
+    public abstract List<ClaimInfo> toInfoList(List<ClaimEntity> claimEntities);
 
     @Mapping(target = "id", ignore = true)
     public abstract void updateEntity(@MappingTarget ClaimEntity claimEntity, Claim claim);
