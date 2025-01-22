@@ -3,6 +3,8 @@ package ru.fast.bills.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.fast.bills.data.models.ClaimEntity;
@@ -34,7 +36,7 @@ public class ClaimService {
     @Transactional
     public Claim createClaimForUser(UUID userId, Claim claim) {
         ClaimEntity claimEntity = this.claimMapper.toEntity(claim);
-        UserEntity userEntity = this.userService.findUserEntity(userId);
+        UserEntity userEntity = this.userService.findUserEntityCacheable(userId);
         claimEntity.setUser(userEntity);
         claimEntity = this.claimRepository.save(claimEntity);
         return this.claimMapper.toDto(claimEntity);
@@ -83,5 +85,10 @@ public class ClaimService {
     public Claim getClaim(UUID claimId) {
         ClaimEntity claimEntity = this.findClaimEntity(claimId);
         return this.claimMapper.toDto(claimEntity);
+    }
+
+    public Page<Claim> getAllPageable(Pageable pageable) {
+        Page<ClaimEntity> claimEntities = this.claimRepository.findAll(pageable);
+        return claimEntities.map(this.claimMapper::toDto);
     }
 }

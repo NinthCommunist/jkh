@@ -1,5 +1,8 @@
 package ru.fast.bills.data.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,4 +21,7 @@ public interface ClaimRepository extends JpaRepository<ClaimEntity, UUID> {
     @Query(value = "from ClaimEntity ce where ce.user.id= :userId")
     List<ClaimEntity> findLazyAllByUser_Id(UUID userId);
 
+    @Override
+    @EntityGraph(attributePaths = {"user", "executor"})
+    Page<ClaimEntity> findAll(Pageable pageable);
 }

@@ -35,13 +35,13 @@ public class UserService {
     @Transactional
     @CacheEvict(value = "userEntity", key = "#userId")
     public User updateUser(UUID userId, User newUser) {
-        UserEntity userEntity = this.findUserEntity(userId);
+        UserEntity userEntity = this.findUserEntityCacheable(userId);
         this.userMapper.updateEntity(userEntity, newUser);
         return this.userMapper.toDto(userEntity);
     }
 
     @Cacheable(value = "userEntity", key = "#userId")
-    public UserEntity findUserEntity(UUID userId) {
+    public UserEntity findUserEntityCacheable(UUID userId) {
         return this.userRepository.findById(userId)
                 .orElseThrow(() -> UserException.userNotFound(userId));
     }

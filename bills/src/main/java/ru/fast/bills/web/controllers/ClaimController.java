@@ -3,6 +3,10 @@ package ru.fast.bills.web.controllers;
 import com.github.fge.jsonpatch.JsonPatch;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,7 +18,6 @@ import ru.fast.bills.web.dto.ClaimInfo;
 import java.util.List;
 import java.util.UUID;
 
-import static ru.fast.bills.utils.AuthorityConstant.SUPER_ADMIN;
 import static ru.fast.bills.utils.AuthorityConstant.SUPER_ADMIN_OR_STAFF_APP;
 
 @RestController
@@ -36,11 +39,10 @@ public class ClaimController {
         return ResponseEntity.ok(claims);
     }
 
-
     @GetMapping("/all")
-    @PreAuthorize(SUPER_ADMIN)
-    public ResponseEntity<List<Claim>> getAll() {
-        return ResponseEntity.ok(this.claimService.getAll());
+    public ResponseEntity<PagedModel<Claim>> getAllPageable(@ParameterObject Pageable pageable) {
+        Page<Claim> claims = this.claimService.getAllPageable(pageable);
+        return ResponseEntity.ok(new PagedModel<>(claims));
     }
 
     /*
@@ -74,4 +76,5 @@ public class ClaimController {
         Claim claim = this.claimService.getClaim(claimId);
         return ResponseEntity.ok(claim);
     }
+
 }
