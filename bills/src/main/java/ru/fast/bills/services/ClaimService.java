@@ -1,10 +1,8 @@
 package ru.fast.bills.services;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.fast.bills.data.models.ClaimEntity;
@@ -14,6 +12,7 @@ import ru.fast.bills.data.repository.ClaimRepository;
 import ru.fast.bills.processing.exception.ClaimException;
 import ru.fast.bills.processing.mappers.ClaimMapper;
 import ru.fast.bills.processing.validators.ClaimValidator;
+import ru.fast.bills.utils.PatchUtils;
 import ru.fast.bills.web.dto.Claim;
 import ru.fast.bills.web.dto.ClaimInfo;
 
@@ -46,13 +45,14 @@ public class ClaimService {
         return this.claimMapper.toDtoList(allClaims);
     }
 
+    @Transactional
     public Claim patchClaim(UUID claimId, JsonPatch patch) {
         this.claimValidator.patchValidate(patch);
 
         ClaimEntity claimEntity = this.findClaimEntity(claimId);
 
         Claim claim = this.claimMapper.toDto(claimEntity);
-        claim = this.applyPatchToCustomer(patch, claim);
+        claim = PatchUtils.applyPatchToCustomer(patch, claim);
 
         this.claimMapper.updateEntity(claimEntity, claim);
         return this.claimMapper.toDto(claimEntity);
@@ -60,13 +60,6 @@ public class ClaimService {
 
     private ClaimEntity findClaimEntity(UUID claimId) {
         return this.claimRepository.findById(claimId).orElseThrow(() -> ClaimException.claimNotFound(claimId));
-    }
-
-    @SneakyThrows
-    private Claim applyPatchToCustomer(
-            JsonPatch patch, Claim targetCustomer) {
-        JsonNode patched = patch.apply(this.objectMapper.convertValue(targetCustomer, JsonNode.class));
-        return this.objectMapper.treeToValue(patched, Claim.class);
     }
 
     public void delete(UUID claimId) {

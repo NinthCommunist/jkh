@@ -1,16 +1,15 @@
 package ru.fast.bills.services;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.fast.bills.data.models.ExecutorEntity;
 import ru.fast.bills.data.repository.ExecutorRepository;
 import ru.fast.bills.processing.exception.ExecutorException;
 import ru.fast.bills.processing.mappers.ExecutorMapper;
+import ru.fast.bills.utils.PatchUtils;
 import ru.fast.bills.web.dto.Executor;
 
 import java.util.List;
@@ -53,7 +52,7 @@ public class ExecutorService {
         ExecutorEntity executorEntity = this.findExecutorEntity(id);
 
         Executor executor = this.executorMapper.toDto(executorEntity);
-        executor = this.applyPatchToCustomer(patch, executor);
+        executor = PatchUtils.applyPatchToCustomer(patch, executor);
 
         this.executorMapper.updateEntity(executorEntity, executor);
         return this.executorMapper.toDto(executorEntity);
@@ -61,13 +60,6 @@ public class ExecutorService {
 
     public void deleteExecutor(long executorId) {
         this.executorRepository.deleteById(executorId);
-    }
-
-    @SneakyThrows
-    private Executor applyPatchToCustomer(
-            JsonPatch patch, Executor targetCustomer) {
-        JsonNode patched = patch.apply(this.objectMapper.convertValue(targetCustomer, JsonNode.class));
-        return this.objectMapper.treeToValue(patched, Executor.class);
     }
 
 }
