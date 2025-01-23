@@ -13,7 +13,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.fast.bills.processing.exception.BillsAbstractException;
-import ru.fast.bills.processing.exception.BillsErrorsContainer;
+import ru.fast.bills.processing.exception.ValidationError;
+import ru.fast.bills.processing.exception.ValidationErrorsContainer;
 import ru.fast.bills.web.dto.ErrorResponse;
 
 import java.util.Collection;
@@ -29,10 +30,10 @@ public class WebExceptionHandler {
     private final MessageSource messageSource;
 
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<List<ErrorResponse>> bindExceptionHandler(BindException ex) {
+    public ResponseEntity<List<ErrorResponse>> bindExceptionHandler(BindException ex, Locale locale) {
         log.info("Bind exception ", ex.getMessage());
 
-        List<ErrorResponse> errorResponseList = this.mapToErrorResponse(ex.getAllErrors());
+        List<ErrorResponse> errorResponseList = this.mapToErrorResponse(ex.getAllErrors(), locale);
 
         return ResponseEntity.badRequest()
                 .body(errorResponseList);
@@ -50,10 +51,10 @@ public class WebExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<List<ErrorResponse>> bindExceptionHandler(ConstraintViolationException ex) {
+    public ResponseEntity<List<ErrorResponse>> bindExceptionHandler(ConstraintViolationException ex, Locale locale) {
         log.info("Constraint violation exception " + ex.getMessage());
 
-        List<ErrorResponse> errorResponseList = this.mapToErrorResponse(ex.getConstraintViolations());
+        List<ErrorResponse> errorResponseList = this.mapToErrorResponse(ex.getConstraintViolations(), locale);
 
         return ResponseEntity.badRequest()
                 .body(errorResponseList);
@@ -69,21 +70,23 @@ public class WebExceptionHandler {
                 .body(Collections.singletonList(errorResponse));
     }
 
-    @ExceptionHandler(BillsErrorsContainer.class)
-    public ResponseEntity<List<ErrorResponse>> billsErrorContainer(BillsErrorsContainer ex) {
+    @ExceptionHandler(ValidationErrorsContainer.class)
+    public ResponseEntity<List<ErrorResponse>> billsErrorContainer(ValidationErrorsContainer ex, Locale locale) {
         log.info("Handle error container");
 
-        List<ErrorResponse> errorResponseList = ex.getErrors();
+        List<ErrorResponse> errorResponseList = this.mapToErrorResponse(ex.getErrors(), locale);
 
         return ResponseEntity.badRequest()
                 .body(errorResponseList);
     }
 
 
-    private List<ErrorResponse> mapToErrorResponse(Collection<?> errors) {
+    private List<ErrorResponse> mapToErrorResponse(Collection<?> errors, Locale locale) {
         return errors.stream().map(er -> {
             if (er instanceof FieldError fe)
                 return new ErrorResponse(fe.getField(), fe.getDefaultMessage());
+            if (er instanceof ValidationError ve)
+                return new ErrorResponse(ve.field(), this.messageSource.getMessage(ve.code(), ve.params(), locale));
             if (er instanceof ConstraintViolationImpl cvi)
                 return new ErrorResponse(cvi.getPropertyPath().toString(), cvi.getMessage());
             return new ErrorResponse(null, "Произошла ошибка, проверьте корректность запроса");

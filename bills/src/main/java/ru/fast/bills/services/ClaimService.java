@@ -1,6 +1,5 @@
 package ru.fast.bills.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,10 +30,10 @@ public class ClaimService {
 
     private final ClaimValidator claimValidator;
     private final ClaimMapper claimMapper;
-    private final ObjectMapper objectMapper;
 
     @Transactional
     public Claim createClaimForUser(UUID userId, Claim claim) {
+        this.claimValidator.validateCreate(claim);
         ClaimEntity claimEntity = this.claimMapper.toEntity(claim);
         UserEntity userEntity = this.userService.findUserEntityCacheable(userId);
         claimEntity.setUser(userEntity);
