@@ -28,6 +28,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
+    @GetMapping(path = "{userId}")
+    public ResponseEntity<User> getUser(@PathVariable("userId") UUID userId) {
+        User user = this.userService.get(userId);
+        return ResponseEntity.ok(user);
+    }
+
     @GetMapping
     @PreAuthorize(SUPER_ADMIN)
     public ResponseEntity<List<User>> allUsers() {

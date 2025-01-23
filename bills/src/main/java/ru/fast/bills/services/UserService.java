@@ -50,4 +50,9 @@ public class UserService {
     public void deleteUser(UUID userId) {
         this.userRepository.deleteById(userId);
     }
+
+    public User get(UUID userId) {
+        UserEntity userEntity = this.findUserEntityCacheable(userId);
+        return this.userMapper.toDto(userEntity);
+    }
 }
