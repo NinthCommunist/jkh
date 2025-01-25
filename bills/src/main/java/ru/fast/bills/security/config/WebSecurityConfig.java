@@ -22,7 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CsrfFilter;
 import ru.fast.bills.security.web.AuthenticationJWTFilter;
-import ru.fast.bills.security.web.JwtLogoutHandler;
+import ru.fast.bills.security.web.LogoutHandlerImpl;
 
 @Configuration
 @SecurityScheme(
@@ -63,7 +63,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtLogoutHandler jwtLogoutHandler, AuthenticationJWTFilter authenticationJWTFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, LogoutHandlerImpl logoutHandlerImpl, AuthenticationJWTFilter authenticationJWTFilter) throws Exception {
         http
                 .csrf(c -> c.ignoringRequestMatchers(WHITE_LIST))
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -83,11 +83,10 @@ public class WebSecurityConfig {
                 .addFilterBefore(authenticationJWTFilter, CsrfFilter.class)
                 .logout(logout ->
                         logout.logoutUrl("/auth/logout")
-                                .addLogoutHandler(jwtLogoutHandler)
+                                .addLogoutHandler(logoutHandlerImpl)
                                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()));
 
         return http.build();
     }
-
 
 }

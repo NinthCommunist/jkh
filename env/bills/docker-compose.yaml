@@ -37,17 +37,6 @@ services:
       start_period: 10s
       retries: 5
     entrypoint: /bin/sh -c "chmod 600 /pgadmin4/pgpass; /entrypoint.sh;"
-  redis:
-    image: redis:7.4.2
-    restart: always
-    ports:
-      - "6379:6379"
-    healthcheck:
-      test: redis-cli ping
-      interval: 10s
-      timeout: 5s
-      start_period: 10s
-      retries: 5
 volumes:
   postgres_data:
   pgadmin_data:

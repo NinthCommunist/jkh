@@ -5,5 +5,5 @@ import jakarta.validation.constraints.Size;
 
 import java.util.UUID;
 
-public record User(UUID id, @Size(min = 0, max = 10) String phone, @Size(min = 3) @NotBlank String nickname) {
+public record User(UUID id, @Size(min = 0, max = 12) String phone, @Size(min = 3) @NotBlank String nickname) {
 }

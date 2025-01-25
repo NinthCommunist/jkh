@@ -1,12 +1,21 @@
 server:
   port: 8081
   servlet:
-    context-path: /api/v1
+    context-path: /api/v1/bills
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/jkh
     username: admin
     password: admin
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      pool-name: SpringBootJPAHikariCP
+      maximum-pool-size: 20
+      minimum-idle: 2
+      idle-timeout: 20000
+      connection-timeout: 20000
+      max-lifetime: 1800000
+
 
   jpa:
     hibernate:
@@ -27,6 +36,7 @@ spring:
 logging:
   level:
     org.hibernate.SQL: DEBUG
+    ru.fast.bills: DEBUG
     org.springframework.security: DEBUG
     org.springframework.data.redis: DEBUG
     io.lettuce.core: DEBUG

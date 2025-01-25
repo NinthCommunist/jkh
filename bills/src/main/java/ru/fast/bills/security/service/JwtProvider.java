@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import ru.fast.bills.security.web.dto.TokenResponse;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
@@ -29,17 +30,25 @@ public class JwtProvider {
     @Value("${app.security.jwt.refresh.expiration}")
     private Duration refreshExpiration;
 
+    public TokenResponse tokensFor(Authentication authentication) {
+        TokenWithExpiration access = this.accessTokenFor(authentication);
+        TokenWithExpiration refresh = this.refreshTokenFor(authentication);
 
-    public String accessTokenFor(final Authentication authentication) {
-        Date issuedAt = new Date();
-        Date expiration = new Date(issuedAt.getTime() + this.accessExpiration.toMillis());
-        return this.generateToken(authentication, issuedAt, expiration);
+        return new TokenResponse(access.token, refresh.token, access.expiration, refresh.expiration);
     }
 
-    public String refreshTokenFor(final Authentication authentication) {
+    public TokenWithExpiration accessTokenFor(final Authentication authentication) {
+        Date issuedAt = new Date();
+        Date expiration = new Date(issuedAt.getTime() + this.accessExpiration.toMillis());
+        String token = this.generateToken(authentication, issuedAt, expiration);
+        return new TokenWithExpiration(token, expiration);
+    }
+
+    private TokenWithExpiration refreshTokenFor(final Authentication authentication) {
         Date issuedAt = new Date();
         Date expiration = new Date(issuedAt.getTime() + this.refreshExpiration.toMillis());
-        return this.generateToken(authentication, issuedAt, expiration);
+        String token = this.generateToken(authentication, issuedAt, expiration);
+        return new TokenWithExpiration(token, expiration);
     }
 
     private String generateToken(Authentication authentication, Date issuedAt, Date expiration) {
@@ -69,5 +78,8 @@ public class JwtProvider {
         return new UsernamePasswordAuthenticationToken(claims.getSubject(),
                 null,
                 roles.stream().map(SimpleGrantedAuthority::new).toList());
+    }
+
+    public record TokenWithExpiration(String token, Date expiration) {
     }
 }

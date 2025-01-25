@@ -1,4 +1,6 @@
 package ru.fast.bills.security.web.dto;
 
-public record TokenResponse(String access, String refresh) {
+import java.util.Date;
+
+public record TokenResponse(String access, String refresh, Date accessExpired, Date refreshExpired) {
 }

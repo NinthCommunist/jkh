@@ -1,0 +1,59 @@
+server:
+  port: 8070
+  servlet:
+    context-path: /api/v1/mobapp
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/mobapp
+    username: admin
+    password: admin
+  type: com.zaxxer.hikari.HikariDataSource
+  hikari:
+    pool-name: SpringBootJPAHikariCP
+    maximum-pool-size: 20
+    minimum-idle: 2
+    idle-timeout: 20000
+    connection-timeout: 20000
+    max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+
+  data:
+    redis:
+      host: localhost
+      port: 6369
+
+  cloud:
+    openfeign:
+      client:
+        config:
+          bills:
+            url: http://localhost:8081/api/v1/bills
+            connection-timeout: 3000
+            read-timeout: 3000
+            loggerLevel: basic
+
+
+
+
+
+
+
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.springframework.cloud.openfeign: DEBUG
+    org.springframework.security: DEBUG
+    ru.fast.mobapp: DEBUG
+    org.springframework.data.redis: DEBUG
+    io.lettuce.core: DEBUG

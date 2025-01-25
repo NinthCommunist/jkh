@@ -11,8 +11,6 @@ import ru.fast.bills.security.web.dto.RefreshTokenRequest;
 import ru.fast.bills.security.web.dto.RegistrationRequest;
 import ru.fast.bills.security.web.dto.TokenResponse;
 
-import java.util.Map;
-
 import static ru.fast.bills.utils.AuthorityConstant.SUPER_ADMIN;
 
 @RequiredArgsConstructor
@@ -36,14 +34,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<Map<String, String>> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
-        String accessToken = this.authenticationService.refreshToken(refreshTokenRequest);
-        return ResponseEntity.ok(Map.of("access", accessToken));
-    }
-
-    @PostMapping("/logout")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String logout() {
-        return "Success logout";
+    public ResponseEntity<TokenResponse> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+        TokenResponse token = this.authenticationService.refreshToken(refreshTokenRequest);
+        return ResponseEntity.ok(token);
     }
 }

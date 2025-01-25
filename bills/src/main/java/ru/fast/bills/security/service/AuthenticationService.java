@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.fast.bills.data.models.MediatorEntity;
 import ru.fast.bills.data.repository.MediatorRepository;
 import ru.fast.bills.security.data.models.MediatorRoleEntity;
-import ru.fast.bills.security.data.repository.JwtRepository;
 import ru.fast.bills.security.data.repository.MediatorRolesRepository;
 import ru.fast.bills.security.exceptions.AuthException;
 import ru.fast.bills.security.web.dto.LoginRequest;
@@ -26,7 +25,6 @@ public class AuthenticationService {
 
     private final MediatorRepository mediatorRepository;
     private final MediatorRolesRepository rolesRepository;
-    private final JwtRepository jwtRepository;
 
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
@@ -53,18 +51,15 @@ public class AuthenticationService {
         Authentication authenticate = this.authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(login.login(), login.password()));
 
-        String accessToken = this.jwtProvider.accessTokenFor(authenticate);
-        this.jwtRepository.saveToken(authenticate.getName(), accessToken);
-        String refreshToken = this.jwtProvider.refreshTokenFor(authenticate);
+        TokenResponse tokens = this.jwtProvider.tokensFor(authenticate);
 
         log.debug("Login success for {}", authenticate.getName());
-        return new TokenResponse(accessToken, refreshToken);
+        return tokens;
     }
 
-    public String refreshToken(RefreshTokenRequest refreshTokenRequest) {
+    public TokenResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
         Authentication authentication = this.jwtProvider.parseAuthentication(refreshTokenRequest.refresh());
-        String accessToken = this.jwtProvider.accessTokenFor(authentication);
-        this.jwtRepository.saveToken(authentication.getName(), accessToken);
-        return accessToken;
+        JwtProvider.TokenWithExpiration accessToken = this.jwtProvider.accessTokenFor(authentication);
+        return new TokenResponse(accessToken.token(), null, accessToken.expiration(), null);
     }
 }

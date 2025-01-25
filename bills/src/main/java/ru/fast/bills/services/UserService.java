@@ -1,8 +1,8 @@
 package ru.fast.bills.services;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.fast.bills.data.models.UserEntity;
@@ -16,8 +16,10 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UserService {
 
+    private final UserService proxyUserService;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
@@ -33,26 +35,23 @@ public class UserService {
     }
 
     @Transactional
-    @CacheEvict(value = "userEntity", key = "#userId")
     public User updateUser(UUID userId, User newUser) {
-        UserEntity userEntity = this.findUserEntityCacheable(userId);
+        UserEntity userEntity = this.proxyUserService.findUserEntityCacheable(userId);
         this.userMapper.updateEntity(userEntity, newUser);
         return this.userMapper.toDto(userEntity);
     }
 
-    @Cacheable(value = "userEntity", key = "#userId")
     public UserEntity findUserEntityCacheable(UUID userId) {
         return this.userRepository.findById(userId)
                 .orElseThrow(() -> UserException.userNotFound(userId));
     }
 
-    @CacheEvict(value = "userEntity", key = "#userId")
     public void deleteUser(UUID userId) {
         this.userRepository.deleteById(userId);
     }
 
     public User get(UUID userId) {
-        UserEntity userEntity = this.findUserEntityCacheable(userId);
+        UserEntity userEntity = this.proxyUserService.findUserEntityCacheable(userId);
         return this.userMapper.toDto(userEntity);
     }
 }

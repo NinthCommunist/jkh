@@ -13,7 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ru.fast.bills.security.data.repository.JwtRepository;
 import ru.fast.bills.security.service.JwtProvider;
 
 import java.io.IOException;
@@ -23,7 +22,6 @@ import java.io.IOException;
 public class AuthenticationJWTFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
-    private final JwtRepository tokenRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -33,9 +31,7 @@ public class AuthenticationJWTFilter extends OncePerRequestFilter {
                 String jwt = StringUtils.substringAfter(authorizationHeader, "Bearer ");
                 Authentication authentication = this.jwtProvider.parseAuthentication(jwt);
                 CsrfFilter.skipRequest(request);
-                if (this.tokenRepository.tokenExist(authentication.getName(), jwt)) {
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
             filterChain.doFilter(request, response);
         } catch (JwtException jwtException) {
