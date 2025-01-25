@@ -1,48 +1,10 @@
-server:
-  port: 8081
-  servlet:
-    context-path: /api/v1/bills
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/jkh
-    username: admin
-    password: admin
-    type: com.zaxxer.hikari.HikariDataSource
-    hikari:
-      pool-name: SpringBootJPAHikariCP
-      maximum-pool-size: 20
-      minimum-idle: 2
-      idle-timeout: 20000
-      connection-timeout: 20000
-      max-lifetime: 1800000
+  application:
+    name: bills
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      uri: http://localhost:8888
+      fail-fast: true
 
-
-  jpa:
-    hibernate:
-      ddl-auto: validate
-
-    properties:
-      hibernate:
-        format_sql: true
-
-  liquibase:
-    change-log: classpath:/db/changelog/db.changelog-master.xml
-
-  redis:
-    host: localhost
-    port: 6379
-
-
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
-    ru.fast.bills: DEBUG
-    org.springframework.security: DEBUG
-    org.springframework.data.redis: DEBUG
-    io.lettuce.core: DEBUG
-app.security.jwt:
-  secret: 8ff54a4bc01d420596fddadfe3c14a22e4c9a629f053facfc2413474b01d58aa63f7f048f8096dd4f401574a24b057af458484345355c1d95b75134c4db46b176b0b7eff334edd5fa0167d7bc20f4cf364cf07b2abbaaf0842062379655b039ece892a2e85b0559ce810892e5fa0072ed1a6056cc22bbc9c00bcffb9574c680eedfb0d41c979702279302f5f996daa4a9cc23fa290690ebff45ee99a293155d5458b2c69372c3a138c376dafd3d9fe5b6ecf5311ce9a60bae526562aa36a1a562aabce7a74ee8f3d6327761da44dea8ab76058f2e5fa659f8cb50604b4e8e2c84981bdcc32fe3e9ee2bbdb0c8d850aafe79242a0154fbb5c05dbdde0850b9ff5
-  access:
-    expiration: 30m
-  refresh:
-    expiration: 6h
