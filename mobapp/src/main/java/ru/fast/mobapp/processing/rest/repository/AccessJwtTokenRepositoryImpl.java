@@ -16,7 +16,7 @@ public class AccessJwtTokenRepositoryImpl implements AccessJwtTokenRepository {
     @Override
     public void save(String key, String value, Date expiredAt) {
         Duration removeAfter = Duration.between(new Date().toInstant(), expiredAt.toInstant());
-        this.stringRedisTemplate.opsForValue().set(key, value, removeAfter.minus(Duration.ofMinutes(1)));
+        this.stringRedisTemplate.opsForValue().set(key, value, removeAfter.minus(Duration.ofHours(1)));
     }
 
     @Override

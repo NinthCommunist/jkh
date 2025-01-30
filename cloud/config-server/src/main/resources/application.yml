@@ -14,3 +14,7 @@ spring:
         native:
           search-locations:
             - classpath:./configs/
+  security:
+    user:
+      name: secret
+      password: secret

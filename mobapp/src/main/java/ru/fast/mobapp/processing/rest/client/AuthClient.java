@@ -8,7 +8,7 @@ import ru.fast.mobapp.processing.rest.dto.Tokens;
 
 import java.util.Map;
 
-@FeignClient(name = "auth", url = "http://localhost:8081/api/v1/bills/auth")
+@FeignClient(name = "auth")
 public interface AuthClient {
 
     @PostMapping("/login")

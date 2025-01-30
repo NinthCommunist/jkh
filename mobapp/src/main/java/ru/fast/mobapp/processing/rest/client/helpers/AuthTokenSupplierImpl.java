@@ -2,6 +2,7 @@ package ru.fast.mobapp.processing.rest.client.helpers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.fast.mobapp.processing.rest.client.AuthClient;
 import ru.fast.mobapp.processing.rest.dto.Credentials;
@@ -14,6 +15,11 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class AuthTokenSupplierImpl implements AuthTokenSupplier {
+
+    @Value("${app.security.bills.login}")
+    private String login;
+    @Value("${app.security.bills.password}")
+    private String password;
 
     private final static String ACCESS_TOKEN_KEY = "accessTokenKey";
     private final static String REFRESH_TOKEN_KEY = "refreshTokenKey";
@@ -38,7 +44,7 @@ public class AuthTokenSupplierImpl implements AuthTokenSupplier {
             return tokens.access();
         }
 
-        Tokens tokens = this.authClient.login(new Credentials("mobapp", "mobapp")).getBody();
+        Tokens tokens = this.authClient.login(new Credentials(this.login, this.password)).getBody();
         log.debug("Use login with credentials request");
         this.tokenRepository.save(ACCESS_TOKEN_KEY, tokens.access(), tokens.accessExpired());
         this.tokenRepository.save(REFRESH_TOKEN_KEY, tokens.refresh(), tokens.refreshExpired());

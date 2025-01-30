@@ -41,13 +41,15 @@ spring:
             connection-timeout: 3000
             read-timeout: 3000
             loggerLevel: basic
+          auth:
+            url: http://localhost:8081/api/v1/bills/auth
+            connection-timeout: 3000
+            read-timeout: 3000
+            loggerLevel: basic
 
-
-
-
-
-
-
+app.security.bills:
+  login: mobapp
+  password: mobapp
 
 logging:
   level:

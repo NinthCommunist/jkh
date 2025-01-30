@@ -8,10 +8,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @SpringBootApplication
 @EnableWebSecurity
 @EnableMethodSecurity
-public class JkhApplication {
+public class BillsApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(JkhApplication.class, args);
+        SpringApplication.run(BillsApplication.class, args);
     }
 
 }

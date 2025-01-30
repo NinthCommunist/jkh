@@ -3,4 +3,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.github.fge:json-patch:1.7'
     implementation 'org.springframework.cloud:spring-cloud-config-client'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation 'org.ehcache:ehcache'
+    implementation 'org.hibernate.orm:hibernate-jcache'
 }

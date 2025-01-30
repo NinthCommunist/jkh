@@ -1,6 +1,6 @@
 spring:
   application:
-    name: mobapp
+    name: discovery
   config:
     import: "optional:configserver:"
   cloud:
@@ -9,3 +9,4 @@ spring:
       username: secret
       password: secret
       fail-fast: true
+
